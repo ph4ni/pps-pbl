@@ -25,7 +25,7 @@ int main() {
 	printf("|-----------------------------|\n");
 	printf("|---Welcome to Virtual Bank---|\n");
 	printf("|-----------------------------|\n\n");	
-	printf("To start using, create an account first\n");
+	printf("To start using, Create an account first.\n");
 	CreateAcc(0); //first user has index 0 in array
 
 	return 0;
@@ -35,22 +35,21 @@ void login(){
 	int selected;
 
 	printf("\nSelect account to login\n");
-	for(int i =1; i<=nos;i++){
+	for(int i =1;i<=nos;i++){
 		printf("%d.\t%s\n",i,user[i-1].name);
 	}
 
 	printf("\nEnter account number: ");
 	scanf("%d",&selected);
 	if(selected<=nos && selected>0){
-		printf("\nEnter Pin to proceed: ");
-		
+		printf("Enter Pin of %s to proceed: ",user[selected-1].name);
 		int enteredpin;
 		scanf("%d",&enteredpin);
 		
 		if(enteredpin != user[selected-1].pin){
 	 		printf("\nWrong PIN. Please Try Again\n\n");
 	 		int i;
-	 		for(i =4;i>=1;i--){  //For loop for a maxiumum of four tries to re-enter PIN.
+	 		for(i=4;i>=1;i--){  //For loop for a maxiumum of four tries to re-enter PIN.
 	 			printf("%d tries left :",i);
 	 			scanf("%d",&enteredpin);
 	 			if(enteredpin == user[selected-1].pin){
@@ -60,15 +59,14 @@ void login(){
 	 			}
 	 		} 
 	 		if(i==0){ //All tries exhausted
-	 			printf("\nFailed to login. Try Again\n");
+	 			printf("\nFailed to login. Try Again\n_______________________________________________\n");
 	 			login();
 	 		}
 		}else{
 			printf("\nSucessfully authenticated!\n");
 			current = selected-1; //Change current account
 			transaction(current); //Proceed to transactions page
-		}
-		
+		}	
 	}else{
 		printf("\nInvalid account number. Try Again\n_______________________________________________\n");
 		home(); //Redirect to main menu
@@ -102,11 +100,11 @@ void home(){
 	}else if(sec == 2){
 		login();        //login page
 	}else if(sec ==3){
-		printf("\nThank you for visiting us!\n");
+    printf("\nThank you for visiting us!\n");
 		exit(0);        //exit out of program
-	}
-	else{
-		printf("Invalid. Try again");
+	}else{
+		printf("\nInvalid. Try again\n");
+    printf("___________________________________\n");
 		home();         //go back to main menu
 	}
 }
@@ -114,7 +112,7 @@ void home(){
 void transaction(int a){
 	printf("___________________________________\n");
 	int check,anotherTransaction;
-	printf("\nLogged in as %s\n",user[a].name);
+	printf("\n*****Logged in as %s*****\n",user[a].name);
 	printf("\nSelect option to perform transactions\n\n");
 	printf("1. Deposit\n"); 
 	printf("2. Withdraw\n"); 
@@ -129,14 +127,19 @@ void transaction(int a){
 		printf("Enter the amount to deposit in INR: ₹");
 		float amount2deposit;
 		scanf("%f",&amount2deposit);
-		user[a].balance = user[a].balance + amount2deposit;
-		printf("\nDeposit completed! Updated balance is ₹%.2f\n",user[a].balance);
-		
+    if(amount2deposit>0){
+      user[a].balance = user[a].balance + amount2deposit;
+		  printf("\nDeposit completed! Updated balance is ₹%.2f\n",user[a].balance);
+    }else{
+      printf("\nInvalid amount. Deposit failed.\n");
+    }
+
 		printf("\nDo you want to perform another transaction?\nPress 1 to proceed and 2 to exit to home screen\n\n"); 
       		scanf("%d", &anotherTransaction); 
       		if(anotherTransaction == 1){
         		transaction(current);
       		}else if(anotherTransaction == 2){
+            printf("___________________________________\n");
       			home();
       		}
 		break;
@@ -148,7 +151,7 @@ void transaction(int a){
 		scanf("%f",&amount2withdraw);
 		
     if(amount2withdraw>user[current].balance){
-				printf("\nInsufficient balance. Deposit required amount before withdrawing.\n");
+				printf("\nInsufficient balance. Deposit required amount before withdrawing.");
 			}else{
         user[a].balance = user[a].balance - amount2withdraw;
 		    printf("\nWithdrawal completed! Updated balance is ₹%.2f\n",user[a].balance);
@@ -159,6 +162,7 @@ void transaction(int a){
       		if(anotherTransaction == 1){
         		transaction(current);
       		}else if(anotherTransaction == 2){
+            printf("___________________________________\n");
       			home();
       		}
 		break;
@@ -171,15 +175,15 @@ void transaction(int a){
       		if(anotherTransaction == 1){
         		transaction(current);
       		}else if(anotherTransaction == 2){
+            printf("___________________________________\n");
       			home();
       		}
 		break;
 		
 		case 4:
 		//Transfers
-		if(nos<2){
+		if(nos<2){ /*if number of accounts are less than 2, it means there are no accounts other than the current account to transfer money to.*/
 			printf("\nNo accounts available to transfer. Create new account first\n");
-			
 		}else{
 			printf("\nSelect account to transfer to\n");
 			int selected; float amnt;
@@ -190,15 +194,18 @@ void transaction(int a){
 			}
 			printf("\nEnter account number :");
 			scanf("%d",&selected);
+
 			while(selected <=0 || selected>nos || selected-1 == current){
 				printf("Enter valid account number : ");
 				scanf("%d",&selected);
 			}
+
 			printf("\nTransferring from %s to %s",user[current].name,user[selected-1].name);
 			printf("\nEnter amount to transfer : ₹");
 			scanf("%f",&amnt);
+
 			if(amnt>user[current].balance){
-				printf("\nInsufficient balance to transfer. Deposit required amount before transferring.");
+				printf("\nInsufficient balance to transfer. Deposit required amount before transferring.\n");
 			}else{
 				user[current].balance = user[current].balance - amnt;
 				user[selected-1].balance = user[selected-1].balance + amnt;
@@ -210,11 +217,12 @@ void transaction(int a){
 			}
 			
       		}
-		printf("\n\nDo you want to perform another transaction?\nPress 1 to proceed and 2 to exit\n\n"); 
+		printf("\nDo you want to perform another transaction?\nPress 1 to proceed and 2 to exit\n\n"); 
       		scanf("%d", &anotherTransaction); 
       		if(anotherTransaction == 1){
         		transaction(current);
       		}else if(anotherTransaction == 2){
+            printf("___________________________________\n");
       			home();
       		}
 		break;
@@ -226,5 +234,9 @@ void transaction(int a){
 		printf("________________________________________________\n");
 		home();
 		break;
+
+    default:
+      printf("\nEnter valid option\n");
+      transaction(current);
 	}
 }
