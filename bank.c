@@ -64,7 +64,7 @@ void login(){
 	 		}
 		}else{
 			printf("\nSucessfully authenticated!\n");
-			current = selected-1; //Change current account
+			current = selected-1; //Change the current account
 			transaction(current); //Proceed to transactions page
 		}	
 	}else{
